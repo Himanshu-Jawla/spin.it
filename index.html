@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,8 +8,18 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+  <!-- Topbar (mobile/minimized hamburger) -->
+  <header class="topbar">
+    <button id="hamburger" aria-label="Open menu" class="hamburger">
+      <span class="hamb-line"></span>
+      <span class="hamb-line"></span>
+      <span class="hamb-line"></span>
+    </button>
+    <div class="topbar-brand">SpinIt</div>
+  </header>
+
   <div class="app-root">
-    <nav class="sidebar">
+    <nav class="sidebar" id="sidebar">
       <div class="brand">
         <div class="logo">S<span class="dot">•</span></div>
         <div class="brand-name">SpinIt</div>
@@ -38,6 +47,9 @@
       <div class="sidebar-footer">© 2025 SpinIt</div>
     </nav>
 
+    <!-- overlay for mobile sidebar -->
+    <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+
     <main class="main">
       <!-- INBOX -->
       <section class="panel" id="inbox">
@@ -63,10 +75,10 @@
         </div>
 
         <div class="filters-row">
-          <label>Filter:</label>
+          <label for="filterLabel" class="filter-label">Filter:</label>
           <select id="filterLabel"><option value="">All labels</option><option>Running</option><option>Studying</option><option>Work</option><option>Personal</option></select>
           <select id="filterPriority"><option value="">All priorities</option><option value="important">Important</option><option value="urgent">Urgent</option><option value="not-important">Not Important</option></select>
-          <label><input type="checkbox" id="showCompleted" /> Show completed</label>
+          <label class="filter-checkbox"><input type="checkbox" id="showCompleted" /> Show completed</label>
         </div>
 
         <ul id="inboxList" class="tasks"></ul>
@@ -132,9 +144,15 @@
             <div class="session-label" id="sessionLabel">Focus Session</div>
           </div>
           <div class="controls">
-            <button class="btn" id="startBtn">Start</button>
-            <button class="btn" id="pauseBtn">Pause</button>
-            <button class="btn" id="resetBtn">Reset</button>
+            <div class="timer-controls-left">
+              <button class="btn" id="startBtn">Start</button>
+              <button class="btn" id="pauseBtn">Pause</button>
+              <button class="btn" id="resetBtn">Reset</button>
+            </div>
+            <div class="timer-controls-right">
+              <label for="customMinutes" class="minutes-label">Minutes</label>
+              <input id="customMinutes" type="number" min="1" max="480" step="1" value="25" />
+            </div>
           </div>
         </div>
       </section>
@@ -171,7 +189,7 @@
       <div class="footer-links">
         <a href="#" onclick="return false;">Docs</a> · <a href="#" onclick="return false;">Export</a> · <a href="#" onclick="return false;">Settings</a>
       </div>
-      <div>© 2025 SpinIt</div>
+      <div class="footer-copyright">© 2025 SpinIt</div>
     </div>
   </footer>
 

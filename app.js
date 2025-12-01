@@ -1,5 +1,5 @@
-// app.js
 // Full-featured SpinIt logic: tasks, labels & filters, calendar, notes, timer, charts
+// Updated: added hamburger mobile sidebar toggle, custom timer minutes input, minor mobile tweaks
 
 // ---- Utilities ----
 const qs = s => document.querySelector(s)
@@ -15,6 +15,33 @@ let tasks = load('spinit_tasks', []) // {id, title, date, label, priority, done,
 let notes = load('spinit_notes', []) // {id,title,content,tags,created}
 let sessions = load('spinit_sessions', {}) // minutes per day map {YYYY-MM-DD: minutes}
 let stats = load('spinit_stats', {sessions:0, minutes:0, streak:0})
+
+// ---- Mobile hamburger (sidebar toggle) ----
+const hamburger = qs('#hamburger')
+const sidebar = qs('#sidebar')
+const overlay = qs('#sidebarOverlay')
+
+function openSidebar(){
+  sidebar.classList.add('open')
+  overlay.classList.add('visible')
+  overlay.setAttribute('aria-hidden','false')
+}
+function closeSidebar(){
+  sidebar.classList.remove('open')
+  overlay.classList.remove('visible')
+  overlay.setAttribute('aria-hidden','true')
+}
+hamburger?.addEventListener('click', ()=> {
+  if(sidebar.classList.contains('open')) closeSidebar(); else openSidebar()
+})
+overlay?.addEventListener('click', closeSidebar)
+
+// Close sidebar when switching to a panel on small screens
+qsa('.nav-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> {
+    if(window.innerWidth <= 980) closeSidebar()
+  })
+})
 
 // ---- Sidebar navigation ----
 qsa('.nav-btn').forEach(btn=>{
@@ -230,25 +257,44 @@ qs('#saveNoteBtn').addEventListener('click', ()=>{
 })
 qs('#noteSearch')?.addEventListener('input', ()=> renderNotes(qs('#noteSearch').value.trim().toLowerCase()))
 
-// ---- Timer & sessions tracking ----
+// ---- Timer & sessions tracking (custom minutes support) ----
 let timerRemaining = 25*60, timerInterval = null
 const timeDisplay = qs('#timeDisplay'), sessionLabelEl = qs('#sessionLabel')
+const customMinutesInput = qs('#customMinutes')
+
 function fmt(s){const m=Math.floor(s/60); const sec=s%60; return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`}
 function updateTimerUI(){ timeDisplay.textContent = fmt(timerRemaining) }
+
+function getCustomMinutes(){
+  const v = parseInt(customMinutesInput?.value, 10)
+  if(!v || isNaN(v) || v < 1) return 25
+  return Math.min(480, v)
+}
+
 qs('#startBtn').addEventListener('click', ()=> {
   if(timerInterval) return
+  // set remaining if timer not started or at initial value
+  if(timerRemaining <= 0 || timerRemaining === 25*60) {
+    const mins = getCustomMinutes()
+    // if timerRemaining is different from desired minutes, set it (so pressing start uses input)
+    if(timerRemaining !== mins*60) timerRemaining = mins*60
+    updateTimerUI()
+  }
   timerInterval = setInterval(()=> {
     timerRemaining--; updateTimerUI()
     if(timerRemaining<=0){
       clearInterval(timerInterval); timerInterval=null
-      // add 25 minutes to today's sessions
-      const day = todayISO(); sessions[day] = (sessions[day]||0) + 25; save('spinit_sessions', sessions); stats.sessions = (stats.sessions||0)+1; stats.minutes = (stats.minutes||0)+25; save('spinit_stats',stats); updateStatsUI(); refreshCharts()
-      timerRemaining = 25*60; updateTimerUI()
+      // add custom minutes to today's sessions
+      const minutesCompleted = getCustomMinutes()
+      const day = todayISO(); sessions[day] = (sessions[day]||0) + minutesCompleted; save('spinit_sessions', sessions)
+      stats.sessions = (stats.sessions||0)+1; stats.minutes = (stats.minutes||0)+minutesCompleted; save('spinit_stats',stats); updateStatsUI(); refreshCharts()
+      // reset timerRemaining to default input minutes
+      timerRemaining = getCustomMinutes()*60; updateTimerUI()
     }
   },1000)
 })
 qs('#pauseBtn').addEventListener('click', ()=> { clearInterval(timerInterval); timerInterval=null })
-qs('#resetBtn').addEventListener('click', ()=> { clearInterval(timerInterval); timerInterval=null; timerRemaining = 25*60; updateTimerUI() })
+qs('#resetBtn').addEventListener('click', ()=> { clearInterval(timerInterval); timerInterval=null; timerRemaining = getCustomMinutes()*60; updateTimerUI() })
 updateTimerUI()
 
 function updateStatsUI(){
