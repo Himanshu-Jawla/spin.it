@@ -1,0 +1,122 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpinIt — Productivity App</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="app-wrapper">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="logo">SpinIt</div>
+    <input type="text" id="searchInput" placeholder="Search tasks...">
+    <button class="nav-btn active" data-panel="inbox">Inbox</button>
+    <button class="nav-btn" data-panel="today">Today</button>
+    <button class="nav-btn" data-panel="upcoming">Upcoming</button>
+    <button class="nav-btn" data-panel="filters">Filters</button>
+    <button class="nav-btn" data-panel="labels">Labels</button>
+    <button class="nav-btn" data-panel="todo">To-Do List</button>
+    <button class="nav-btn" data-panel="timer">Timer</button>
+    <button class="nav-btn" data-panel="analytics">Analytics</button>
+    <button class="nav-btn" data-panel="notes">Notes</button>
+  </nav>
+
+  <!-- Main Panel -->
+  <div class="main-panel">
+
+    <!-- Inbox / Tasks -->
+    <div class="panel" id="inbox">
+      <h2>Inbox</h2>
+      <div class="task-input">
+        <input type="text" id="inboxTask" placeholder="Add a new task">
+        <input type="date" id="inboxDate">
+        <button class="btn" id="addInboxTask">Add</button>
+      </div>
+      <ul class="tasks" id="inboxList"></ul>
+    </div>
+
+    <!-- Today Panel -->
+    <div class="panel" id="today" style="display:none;">
+      <h2>Today</h2>
+      <ul class="tasks" id="todayList"></ul>
+    </div>
+
+    <!-- Upcoming Panel -->
+    <div class="panel" id="upcoming" style="display:none;">
+      <h2>Upcoming</h2>
+      <ul class="tasks" id="upcomingList"></ul>
+    </div>
+
+    <!-- Filters Panel -->
+    <div class="panel" id="filters" style="display:none;">
+      <h2>Filters</h2>
+      <div id="filtersList">No filters yet.</div>
+    </div>
+
+    <!-- Labels Panel -->
+    <div class="panel" id="labels" style="display:none;">
+      <h2>Labels</h2>
+      <div id="labelsList">No labels yet.</div>
+    </div>
+
+    <!-- To-Do Panel -->
+    <div class="panel" id="todo" style="display:none;">
+      <h2>To-Do List</h2>
+      <div class="task-input">
+        <input type="text" id="todoText" placeholder="Add task">
+        <button class="btn" id="addTodo">Add</button>
+      </div>
+      <ul class="tasks" id="todoList"></ul>
+    </div>
+
+    <!-- Timer Panel -->
+    <div class="panel" id="timer" style="display:none;">
+      <h2>Focus Timer</h2>
+      <div class="time-display">
+        <div class="time" id="time">25:00</div>
+        <div class="session-label" id="sessionLabel">Focus Session</div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="startBtn">Start</button>
+        <button class="btn" id="pauseBtn">Pause</button>
+        <button class="btn" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <!-- Analytics Panel -->
+    <div class="panel" id="analytics" style="display:none;">
+      <h2>Analytics</h2>
+      <canvas id="pieChart"></canvas>
+      <canvas id="barChart"></canvas>
+    </div>
+
+    <!-- Notes Panel -->
+    <div class="panel" id="notes" style="display:none;">
+      <h2>Notes</h2>
+      <textarea id="noteText" placeholder="Write notes..."></textarea>
+      <button class="btn" id="saveNote">Save Note</button>
+      <ul id="notesList"></ul>
+    </div>
+
+    <!-- Calendar Panel -->
+    <div class="panel" id="calendar" style="display:none;">
+      <h2>Calendar</h2>
+      <div id="calendarView"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>© 2025 SpinIt Productivity App. All rights reserved.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
