@@ -1,122 +1,180 @@
 <!-- index.html -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SpinIt — Productivity App</title>
-<link rel="stylesheet" href="styles.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SpinIt — Productivity App</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<div class="app-wrapper">
-
-  <!-- Sidebar -->
-  <nav class="sidebar">
-    <div class="logo">SpinIt</div>
-    <input type="text" id="searchInput" placeholder="Search tasks...">
-    <button class="nav-btn active" data-panel="inbox">Inbox</button>
-    <button class="nav-btn" data-panel="today">Today</button>
-    <button class="nav-btn" data-panel="upcoming">Upcoming</button>
-    <button class="nav-btn" data-panel="filters">Filters</button>
-    <button class="nav-btn" data-panel="labels">Labels</button>
-    <button class="nav-btn" data-panel="todo">To-Do List</button>
-    <button class="nav-btn" data-panel="timer">Timer</button>
-    <button class="nav-btn" data-panel="analytics">Analytics</button>
-    <button class="nav-btn" data-panel="notes">Notes</button>
-  </nav>
-
-  <!-- Main Panel -->
-  <div class="main-panel">
-
-    <!-- Inbox / Tasks -->
-    <div class="panel" id="inbox">
-      <h2>Inbox</h2>
-      <div class="task-input">
-        <input type="text" id="inboxTask" placeholder="Add a new task">
-        <input type="date" id="inboxDate">
-        <button class="btn" id="addInboxTask">Add</button>
+  <div class="app-root">
+    <nav class="sidebar">
+      <div class="brand">
+        <div class="logo">S<span class="dot">•</span></div>
+        <div class="brand-name">SpinIt</div>
       </div>
-      <ul class="tasks" id="inboxList"></ul>
-    </div>
 
-    <!-- Today Panel -->
-    <div class="panel" id="today" style="display:none;">
-      <h2>Today</h2>
-      <ul class="tasks" id="todayList"></ul>
-    </div>
+      <input id="searchInput" class="search" placeholder="Search tasks / notes" />
 
-    <!-- Upcoming Panel -->
-    <div class="panel" id="upcoming" style="display:none;">
-      <h2>Upcoming</h2>
-      <ul class="tasks" id="upcomingList"></ul>
-    </div>
-
-    <!-- Filters Panel -->
-    <div class="panel" id="filters" style="display:none;">
-      <h2>Filters</h2>
-      <div id="filtersList">No filters yet.</div>
-    </div>
-
-    <!-- Labels Panel -->
-    <div class="panel" id="labels" style="display:none;">
-      <h2>Labels</h2>
-      <div id="labelsList">No labels yet.</div>
-    </div>
-
-    <!-- To-Do Panel -->
-    <div class="panel" id="todo" style="display:none;">
-      <h2>To-Do List</h2>
-      <div class="task-input">
-        <input type="text" id="todoText" placeholder="Add task">
-        <button class="btn" id="addTodo">Add</button>
+      <div class="nav-group">
+        <button class="nav-btn active" data-panel="inbox">Inbox</button>
+        <button class="nav-btn" data-panel="today">Today</button>
+        <button class="nav-btn" data-panel="upcoming">Upcoming</button>
+        <button class="nav-btn" data-panel="calendar">Calendar</button>
+        <button class="nav-btn" data-panel="todo">To-Do</button>
+        <button class="nav-btn" data-panel="timer">Timer</button>
+        <button class="nav-btn" data-panel="analytics">Analytics</button>
+        <button class="nav-btn" data-panel="notes">Notes</button>
       </div>
-      <ul class="tasks" id="todoList"></ul>
-    </div>
 
-    <!-- Timer Panel -->
-    <div class="panel" id="timer" style="display:none;">
-      <h2>Focus Timer</h2>
-      <div class="time-display">
-        <div class="time" id="time">25:00</div>
-        <div class="session-label" id="sessionLabel">Focus Session</div>
+      <div class="meta">
+        <div class="mini-stat"><div id="statSessions">0</div><small>Sessions</small></div>
+        <div class="mini-stat"><div id="statMinutes">0</div><small>Minutes</small></div>
+        <div class="mini-stat"><div id="statStreak">0</div><small>Streak</small></div>
       </div>
-      <div class="controls">
-        <button class="btn" id="startBtn">Start</button>
-        <button class="btn" id="pauseBtn">Pause</button>
-        <button class="btn" id="resetBtn">Reset</button>
-      </div>
-    </div>
 
-    <!-- Analytics Panel -->
-    <div class="panel" id="analytics" style="display:none;">
-      <h2>Analytics</h2>
-      <canvas id="pieChart"></canvas>
-      <canvas id="barChart"></canvas>
-    </div>
+      <div class="sidebar-footer">© 2025 SpinIt</div>
+    </nav>
 
-    <!-- Notes Panel -->
-    <div class="panel" id="notes" style="display:none;">
-      <h2>Notes</h2>
-      <textarea id="noteText" placeholder="Write notes..."></textarea>
-      <button class="btn" id="saveNote">Save Note</button>
-      <ul id="notesList"></ul>
-    </div>
+    <main class="main">
+      <!-- INBOX -->
+      <section class="panel" id="inbox">
+        <header class="panel-header"><h2>Inbox</h2></header>
 
-    <!-- Calendar Panel -->
-    <div class="panel" id="calendar" style="display:none;">
-      <h2>Calendar</h2>
-      <div id="calendarView"></div>
-    </div>
+        <div class="task-input-row">
+          <input id="inboxTitle" placeholder="Task title" />
+          <input id="inboxDate" type="date" />
+          <select id="inboxLabel">
+            <option value="">Label</option>
+            <option>Running</option>
+            <option>Studying</option>
+            <option>Work</option>
+            <option>Personal</option>
+          </select>
+          <select id="inboxPriority">
+            <option value="normal">Normal</option>
+            <option value="important">Important</option>
+            <option value="urgent">Urgent</option>
+            <option value="not-important">Not Important</option>
+          </select>
+          <button class="btn primary" id="addInboxBtn">Add</button>
+        </div>
 
+        <div class="filters-row">
+          <label>Filter:</label>
+          <select id="filterLabel"><option value="">All labels</option><option>Running</option><option>Studying</option><option>Work</option><option>Personal</option></select>
+          <select id="filterPriority"><option value="">All priorities</option><option value="important">Important</option><option value="urgent">Urgent</option><option value="not-important">Not Important</option></select>
+          <label><input type="checkbox" id="showCompleted" /> Show completed</label>
+        </div>
+
+        <ul id="inboxList" class="tasks"></ul>
+      </section>
+
+      <!-- TODAY -->
+      <section class="panel" id="today" style="display:none;">
+        <header class="panel-header"><h2>Today</h2></header>
+        <ul id="todayList" class="tasks"></ul>
+      </section>
+
+      <!-- UPCOMING -->
+      <section class="panel" id="upcoming" style="display:none;">
+        <header class="panel-header"><h2>Upcoming</h2></header>
+        <ul id="upcomingList" class="tasks"></ul>
+      </section>
+
+      <!-- CALENDAR -->
+      <section class="panel" id="calendar" style="display:none;">
+        <header class="panel-header"><h2>Calendar</h2></header>
+        <div id="calendarControls" class="calendar-controls">
+          <button class="small" id="prevMonth">◀</button>
+          <div id="monthLabel" class="month-label"></div>
+          <button class="small" id="nextMonth">▶</button>
+        </div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+
+        <div id="dayPanel" class="day-panel">
+          <h3 id="dayPanelLabel"></h3>
+          <div class="task-input-row small">
+            <input id="dayTaskTitle" placeholder="Task title" />
+            <button class="btn" id="addDayTask">Add to date</button>
+          </div>
+          <ul id="dayTaskList" class="tasks"></ul>
+        </div>
+      </section>
+
+      <!-- TODO -->
+      <section class="panel" id="todo" style="display:none;">
+        <header class="panel-header"><h2>To-Do</h2></header>
+        <div class="task-input-row">
+          <input id="todoTitle" placeholder="Task title" />
+          <select id="todoLabel">
+            <option value="">Label</option><option>Running</option><option>Studying</option><option>Work</option><option>Personal</option>
+          </select>
+          <select id="todoPriority">
+            <option value="normal">Normal</option>
+            <option value="important">Important</option>
+            <option value="urgent">Urgent</option>
+            <option value="not-important">Not Important</option>
+          </select>
+          <button class="btn primary" id="addTodoBtn">Add</button>
+        </div>
+        <ul id="todoList" class="tasks"></ul>
+      </section>
+
+      <!-- TIMER -->
+      <section class="panel" id="timer" style="display:none;">
+        <header class="panel-header"><h2>Focus Timer</h2></header>
+        <div class="timer-wrap">
+          <div class="timer-display">
+            <div id="timeDisplay" class="time-display">25:00</div>
+            <div class="session-label" id="sessionLabel">Focus Session</div>
+          </div>
+          <div class="controls">
+            <button class="btn" id="startBtn">Start</button>
+            <button class="btn" id="pauseBtn">Pause</button>
+            <button class="btn" id="resetBtn">Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ANALYTICS -->
+      <section class="panel" id="analytics" style="display:none;">
+        <header class="panel-header"><h2>Analytics</h2></header>
+        <div class="charts-row">
+          <canvas id="pieChart"></canvas>
+          <canvas id="barChart"></canvas>
+        </div>
+      </section>
+
+      <!-- NOTES -->
+      <section class="panel" id="notes" style="display:none;">
+        <header class="panel-header"><h2>Notes</h2></header>
+        <div class="note-input-row">
+          <input id="noteTitle" placeholder="Title (optional)" />
+          <input id="noteTags" placeholder="Tags (comma separated)" />
+          <textarea id="noteContent" placeholder="Write your note..."></textarea>
+          <div class="note-actions">
+            <button class="btn primary" id="saveNoteBtn">Save Note</button>
+            <input id="noteSearch" placeholder="Search notes" />
+          </div>
+        </div>
+        <ul id="notesList" class="notes-list"></ul>
+      </section>
+    </main>
   </div>
-</div>
 
-<!-- Footer -->
-<footer>
-  <p>© 2025 SpinIt Productivity App. All rights reserved.</p>
-</footer>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">SpinIt</div>
+      <div class="footer-links">
+        <a href="#" onclick="return false;">Docs</a> · <a href="#" onclick="return false;">Export</a> · <a href="#" onclick="return false;">Settings</a>
+      </div>
+      <div>© 2025 SpinIt</div>
+    </div>
+  </footer>
 
-<script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
